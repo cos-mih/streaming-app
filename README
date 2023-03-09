@@ -1,0 +1,31 @@
+SIMPLE STREAMING APPLICATION
+
+This project models a simple streaming type application dealing with streamers, streams and users, implementing basic
+functionalities such as:
+    - addition and deletion of streams by streamers;
+    - marking streams as "listened to" by users;
+    - listing streams associated with a streamer or user;
+    - making recommendation for a usr based on what he has already listened to (basic recommendation) and based on what
+      is currently popular in the app (surprise recommendation).
+All functionalities are implemented as commands read from a command file, line by line.
+
+
+Packages: - entities : contains classes representing the implementation of the actual relevant objects in the system;
+          - interpreters : contains command extractors used to interpret the list of strings representing a command read
+                           from the command file;
+          - commands : contains command type classes meant to process each specific command supported by the system.
+
+
+General logic and Design Patterns:
+
+    - first, a database-like object is populated with the data read from a series of CSV files with streamer, stream and
+      user data - Singleton (unique instance of the database);
+    - each line read from the command file is passed to a method that chooses the right command interpreter for it based
+      on its keyword (ADD, DELETE, LIST, LISTEN, RECOMMEND, SURPRISE) - Strategy with Chain of Responsibility pattern;
+    - a command extractor interprets all the arguments given to the command and assign the corresponding values to the
+      parameters with which it creates a new Command object; the resulting command is then executed - Command pattern;
+    - each specific command uses Database methods further described in code comments; creation of streams based on their
+      type (song, podcast or audiobook) is managed by a Factory pattern that returns a Builder for a specific class
+      representing a type of stream; for deletion an Observer pattern is used: the database notifies all users about the
+      deletion of a certain stream and triggers the removal of that stream from each user's collection.
+
